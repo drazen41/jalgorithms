@@ -1,5 +1,4 @@
 import edu.princeton.cs.algs4.StdRandom;
-import edu.princeton.cs.algs4.StdStats;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
@@ -11,25 +10,17 @@ public class Percolation {
 	private WeightedQuickUnionUF weightedQuickUnionUF;
 	public Percolation(int n) {
 		// TODO Auto-generated constructor stub
-		grid = new boolean[n+1][n+1];
+		
 		if (n <= 0) {
 			throw new java.lang.IllegalArgumentException();
 		} 
-//		else {
-//			
-//			for (int i = 1; i < n; i++) {
-//				for (int j = 1; j < n; j++) {
-//					grid[i][j]=false;
-//				}
-//			}
-//			
-//		}
+		grid = new boolean[n+1][n+1];
 		openSites = 0;
 		this.n = n;
 		weightedQuickUnionUF = new WeightedQuickUnionUF(n*n+2);
 	}
 	private boolean checkIfIllegalArguments(int row, int col) {
-		if (row <= 0 || col > n) {
+		if (row <= 0 || row > n || col > n || col <= 0) {
 			return true;
 		}
 		return false;
@@ -37,6 +28,9 @@ public class Percolation {
 	public    void open(int row, int col) { // open site (row, col) if it is not open already
 		if (checkIfIllegalArguments(row, col)) {
 			throw new java.lang.IllegalArgumentException();
+		}
+		if (isOpen(row, col)) {
+			return;
 		}
 		int pozicija = (row-1)*this.n + col;
 		int up = pozicija - n;
@@ -46,66 +40,128 @@ public class Percolation {
 		if (row == 1) {
 			weightedQuickUnionUF.union(0, pozicija);
 			
-			if (isOpen(row, col+1)) {
-				weightedQuickUnionUF.union(right, pozicija);
-				openSites++;
+			if (col == 1) {
+				if (isOpen(row, col+1)) {
+					weightedQuickUnionUF.union(right, pozicija);
+					
+				}
+				if (isOpen(row+1, col)) {
+					weightedQuickUnionUF.union(down, pozicija);
+					
+				}
+			} else if (col == n) {
+				if (isOpen(row, col-1)) {
+					weightedQuickUnionUF.union(left, pozicija);
+					
+				}
+				if (isOpen(row+1, col)) {
+					weightedQuickUnionUF.union(down, pozicija);
+					
+				}
+			} else {
+				if (isOpen(row, col-1)) {
+					weightedQuickUnionUF.union(left, pozicija);
+					
+				}
+				if (isOpen(row, col+1)) {
+					weightedQuickUnionUF.union(right, pozicija);
+					
+				}
+				if (isOpen(row+1, col)) {
+					weightedQuickUnionUF.union(down, pozicija);
+					
+				}
 			}
 			
 			
-		} else if(row == n) {
+			
+		} else if (row == n) {
 			weightedQuickUnionUF.union(n*n+1, pozicija);
+			
+			if (col == 1) {
+				if (isOpen(row, col+1)) {
+					weightedQuickUnionUF.union(right, pozicija);
+					
+				}
+				if (isOpen(row-1, col)) {
+					weightedQuickUnionUF.union(up, pozicija);
+					
+				}
+			} else if (col == n) {
+				if (isOpen(row, col-1)) {
+					weightedQuickUnionUF.union(left, pozicija);
+					
+				}
+				if (isOpen(row-1, col)) {
+					weightedQuickUnionUF.union(up, pozicija);
+					
+				}
+			} else {
+				if (isOpen(row, col-1)) {
+					weightedQuickUnionUF.union(left, pozicija);
+					
+				}
+				if (isOpen(row, col+1)) {
+					weightedQuickUnionUF.union(right, pozicija);
+					
+				}
+				if (isOpen(row-1, col)) {
+					weightedQuickUnionUF.union(up, pozicija);
+					
+				}
+			}
 		} else {
 			
 			if (col == 1) {
 				if (isOpen(row+1, col)) {
 					weightedQuickUnionUF.union(down, pozicija);
-					openSites++;
+					
 				}
 				if (isOpen(row-1, col)) {
 					weightedQuickUnionUF.union(up, pozicija);
-					openSites++;
+					
 				}
 				if (isOpen(row, col+1)) {
 					weightedQuickUnionUF.union(right, pozicija);
-					openSites++;
+					
 				}
 			} else if (col == n) {
 				if (isOpen(row-1, col)) {
 					weightedQuickUnionUF.union(up, pozicija);
-					openSites++;
+					
 				}
 				if (isOpen(row+1, col)) {
 					weightedQuickUnionUF.union(down, pozicija);
-					openSites++;
+					
 				}
 				if (isOpen(row, col-1)) {
 					weightedQuickUnionUF.union(left, pozicija);
-					openSites++;
+					
 				}
 			} else {
 				
 				if (isOpen(row-1, col)) {
 					weightedQuickUnionUF.union(up, pozicija);
-					openSites++;
+					
 				}
 				if (isOpen(row+1, col)) {
 					weightedQuickUnionUF.union(down, pozicija);
-					openSites++;
+					
 				}
 				if (isOpen(row, col-1)) {
 					weightedQuickUnionUF.union(left, pozicija);
-					openSites++;
+					
 				}
 				if (isOpen(row, col+1)) {
 					weightedQuickUnionUF.union(right, pozicija);
-					openSites++;
+					
 				}
 				
 				
 			}
 		}
-		
-		 grid[row][col] = true;
+		openSites++;
+		grid[row][col] = true;
 	}
 	public boolean isOpen(int row, int col) {  // is site (row, col) open?
 		if (checkIfIllegalArguments(row, col)) {
@@ -117,7 +173,9 @@ public class Percolation {
 		if (checkIfIllegalArguments(row, col)) {
 			throw new java.lang.IllegalArgumentException();
 		}
-		return grid[row][col];
+		int pozicija = (row-1)*this.n + col;
+		return weightedQuickUnionUF.connected(0, pozicija);
+		
 	}
 	public     int numberOfOpenSites() {      // number of open sites
 		   return openSites;
@@ -135,27 +193,52 @@ public class Percolation {
 		// TODO Auto-generated method stub
 		int n = 3;
 		Percolation percolation = new Percolation(n);
-		int row = StdRandom.uniform(1,n+1);
-		int col = StdRandom.uniform(1,n+1);
-//		int row = 2;
-//		int col = 2;
+//		int row = StdRandom.uniform(1,n+1);
+//		int col = StdRandom.uniform(1,n+1);
+//		percolation.open(row, col);
+//		boolean percolates = false;
+//		while(!percolates) {
+//			if (percolation.percolates()) {
+//				percolates = true;
+//				System.out.println("Percolation with " + percolation.numberOfOpenSites() + " open sites.");
+//			} else {
+//				row = StdRandom.uniform(1,n+1);
+//				col = StdRandom.uniform(1,n+1);
+//				percolation.open(row, col);
+//				
+//			}	
+//		}
+		int row = 3;
+		int col = 2;
 		percolation.open(row, col);
-		boolean percolates = false;
-		while(!percolates) {
-			if (percolation.percolates()) {
-				percolates = true;
-				System.out.println("Percolation with " + percolation.numberOfOpenSites() + " open sites.");
-			} else {
-				row = StdRandom.uniform(1,n+1);
-				col = StdRandom.uniform(1,n+1);
-//				row = 1;
-//				row = 3;
-				percolation.open(row, col);
-				percolation.percolates();
-			}	
-		}
-			
+		boolean isOpen = percolation.isOpen(row, col);
+		boolean percolates = percolation.percolates();
+		int numberOfOpenSites = percolation.numberOfOpenSites();
+		boolean isFull = percolation.isFull(row, col);
 		
+		
+		
+		
+//		BufferedReader br;
+//		try {
+//			br = new BufferedReader(new FileReader("input6.txt"));
+//			StringBuilder sb = new StringBuilder();
+//		    String line = br.readLine();
+//
+//		    while (line != null) {
+//		        sb.append(line);
+//		        sb.append(System.lineSeparator());
+//		        line = br.readLine();
+//		    }
+//		    String everything = sb.toString();
+//		    br.close();
+//		} catch (IOException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//			
+//		} finally {
+//			
+//		} 
 		
 		
 		
