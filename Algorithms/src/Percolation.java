@@ -193,52 +193,33 @@ public class Percolation {
 		// TODO Auto-generated method stub
 		int n = 3;
 		Percolation percolation = new Percolation(n);
-//		int row = StdRandom.uniform(1,n+1);
-//		int col = StdRandom.uniform(1,n+1);
-//		percolation.open(row, col);
-//		boolean percolates = false;
-//		while(!percolates) {
-//			if (percolation.percolates()) {
-//				percolates = true;
-//				System.out.println("Percolation with " + percolation.numberOfOpenSites() + " open sites.");
-//			} else {
-//				row = StdRandom.uniform(1,n+1);
-//				col = StdRandom.uniform(1,n+1);
-//				percolation.open(row, col);
-//				
-//			}	
-//		}
-		int row = 3;
-		int col = 2;
+		int row = StdRandom.uniform(1,n+1);
+		int col = StdRandom.uniform(1,n+1);
 		percolation.open(row, col);
-		boolean isOpen = percolation.isOpen(row, col);
-		boolean percolates = percolation.percolates();
-		int numberOfOpenSites = percolation.numberOfOpenSites();
-		boolean isFull = percolation.isFull(row, col);
+		boolean percolates = false;
+		while(!percolates) {
+			if (percolation.percolates()) {
+				percolates = true;
+				System.out.println("Percolation with " + percolation.numberOfOpenSites() + " open sites.");
+			} else {
+				row = StdRandom.uniform(1,n+1);
+				col = StdRandom.uniform(1,n+1);
+				percolation.open(row, col);
+				
+			}	
+		}
+//		int row = 3;
+//		int col = 2;
+//		percolation.open(row, col);
+//		boolean isOpen = percolation.isOpen(row, col);
+//		boolean percolates = percolation.percolates();
+//		int numberOfOpenSites = percolation.numberOfOpenSites();
+//		boolean isFull = percolation.isFull(row, col);
+//		
 		
 		
 		
-		
-//		BufferedReader br;
-//		try {
-//			br = new BufferedReader(new FileReader("input6.txt"));
-//			StringBuilder sb = new StringBuilder();
-//		    String line = br.readLine();
-//
-//		    while (line != null) {
-//		        sb.append(line);
-//		        sb.append(System.lineSeparator());
-//		        line = br.readLine();
-//		    }
-//		    String everything = sb.toString();
-//		    br.close();
-//		} catch (IOException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//			
-//		} finally {
-//			
-//		} 
+
 		
 		
 		
