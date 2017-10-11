@@ -9,7 +9,7 @@ public class Permutation {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		int k = 3;
-//		int i = 0;
+		int i = 0;
 		RandomizedQueue<String > randomizedQueue = new RandomizedQueue<>();
 		if (args.length == 1) {
 			k = Integer.parseInt(args[0]);
@@ -27,8 +27,10 @@ public class Permutation {
 //			i++;
         }
 		Iterator<String> iterator = randomizedQueue.iterator();
-		while(iterator.hasNext()) {
+		
+		while(iterator.hasNext() && i < k) {			
 			StdOut.println(iterator.next());
+			i++;
 		}
         
 	}
