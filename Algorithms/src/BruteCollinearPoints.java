@@ -1,8 +1,10 @@
 import edu.princeton.cs.algs4.*;
 public class BruteCollinearPoints {
 	
-	private Point[]points;
+	private final Point[] points;
+	private LineSegment[] returned;
 	private int segments = 0;
+	
 	public BruteCollinearPoints(Point[] points) {
 		// TODO Auto-generated constructor stub
 		if (points == null) {
@@ -18,23 +20,36 @@ public class BruteCollinearPoints {
 				}
 			}
 		}
-		this.points = points;
+		this.points = points.clone();
+		segments = 0;
 	}
 	public int numberOfSegments() { // the number of line segments
 		return segments;
 	}
+	private int getArrayLength() {
+		return points.length;
+	}
+	private Point getPoint(int index) {
+		return points[index];
+	}
+	private Point[] getArray() {
+		return points.clone();
+	}
 	public LineSegment[] segments() { // the line segments
-		LineSegment[]temp = new LineSegment[this.points.length];
+		segments = 0;
+		int pointsLength=getArrayLength();
+		LineSegment[]temp = new LineSegment[pointsLength];
 		Point point, point1, point2, point3;
-		int j = 0;
-		for (int i = 0; i < points.length-3; i++) {
-			for (int k = i+1; k < points.length-2; k++) {
-				for (int l = k+1; l < points.length-1; l++) {
-					for (int m = l+1; m < points.length; m++) {
-						point = points[i];
-						point1 = points[k];
-						point2 = points[l];
-						point3 = points[m];
+		int j = 0;		
+		Merge.sort(this.points);
+		for (int i = 0; i < pointsLength-3; i++) {
+			for (int k = i+1; k < pointsLength-2; k++) {
+				for (int l = k+1; l < pointsLength-1; l++) {
+					for (int m = l+1; m < pointsLength; m++) {
+						point = getPoint(i);
+						point1 = getPoint(k);
+						point2 = getPoint(l);
+						point3 = getPoint(m);
 						if (point.slopeTo(point1) == point.slopeTo(point2) && point.slopeTo(point2) == point.slopeTo(point3)) {
 							segments++;
 							LineSegment segment = new LineSegment(point, point3);
@@ -46,7 +61,7 @@ public class BruteCollinearPoints {
 			}
 		}
 		j = 0;
-		LineSegment[] returned = new LineSegment[segments];
+		returned = new LineSegment[segments];
 		for (LineSegment lineSegment : temp) {
 			if (lineSegment != null) {
 				returned[j] = lineSegment;
@@ -54,7 +69,7 @@ public class BruteCollinearPoints {
 			}
 			
 		}
-		return returned;
+		return returned.clone();
 	}
 	
 }

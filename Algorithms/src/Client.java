@@ -1,3 +1,5 @@
+import java.lang.reflect.Array;
+
 import edu.princeton.cs.algs4.*;
 public class Client {
 	public static void main(String[] args) {
@@ -37,10 +39,34 @@ public class Client {
 	        int y = in.readInt();
 	        points[i] = new Point(x, y);
 	    }
+	    for (Point point : points) {
+			StdOut.println(point.toString());
+		}
 		BruteCollinearPoints bruteCollinearPoints = new BruteCollinearPoints(points);
-		LineSegment[] segments = bruteCollinearPoints.segments();
+//		LineSegment[] segments = bruteCollinearPoints.segments();
+//		StdOut.println(bruteCollinearPoints.numberOfSegments());
+//		if (segments.length> 0) {
+//			for (LineSegment lineSegment : segments) {
+//				StdOut.println(lineSegment.toString());
+//			}
+//		}
+//		
+//	    FastCollinearPoints fastCollinearPoints = new FastCollinearPoints(points);
+//	    segments = fastCollinearPoints.segments();
+//	    StdOut.println(fastCollinearPoints.numberOfSegments());
+//	    if (segments.length > 0) {
+//	    	for (LineSegment lineSegment : segments) {
+//				StdOut.println(lineSegment.toString());
+//			}
+//		}
+		LineSegment[] lineSegments = bruteCollinearPoints.segments();
 		StdOut.println(bruteCollinearPoints.numberOfSegments());
-//	    // draw the points
+	    points[3] = new Point(23, 23);
+	    StdOut.println(bruteCollinearPoints.numberOfSegments());
+	    StdOut.println(bruteCollinearPoints.numberOfSegments());
+	    LineSegment[] lineSegments1 = bruteCollinearPoints.segments();
+	    StdOut.println(lineSegments.equals(lineSegments1));
+	    // draw the points
 //	    StdDraw.enableDoubleBuffering();
 //	    StdDraw.setXscale(0, 32768);
 //	    StdDraw.setYscale(0, 32768);
