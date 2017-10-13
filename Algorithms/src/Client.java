@@ -43,7 +43,7 @@ public class Client {
 			StdOut.println(point.toString());
 		}
 		BruteCollinearPoints bruteCollinearPoints = new BruteCollinearPoints(points);
-//		LineSegment[] segments = bruteCollinearPoints.segments();
+		LineSegment[] segments = bruteCollinearPoints.segments();
 //		StdOut.println(bruteCollinearPoints.numberOfSegments());
 //		if (segments.length> 0) {
 //			for (LineSegment lineSegment : segments) {
@@ -51,21 +51,31 @@ public class Client {
 //			}
 //		}
 //		
-//	    FastCollinearPoints fastCollinearPoints = new FastCollinearPoints(points);
-//	    segments = fastCollinearPoints.segments();
-//	    StdOut.println(fastCollinearPoints.numberOfSegments());
-//	    if (segments.length > 0) {
-//	    	for (LineSegment lineSegment : segments) {
-//				StdOut.println(lineSegment.toString());
-//			}
-//		}
-		LineSegment[] lineSegments = bruteCollinearPoints.segments();
-		StdOut.println(bruteCollinearPoints.numberOfSegments());
-	    points[3] = new Point(23, 23);
-	    StdOut.println(bruteCollinearPoints.numberOfSegments());
-	    StdOut.println(bruteCollinearPoints.numberOfSegments());
-	    LineSegment[] lineSegments1 = bruteCollinearPoints.segments();
-	    StdOut.println(lineSegments.equals(lineSegments1));
+	    FastCollinearPoints fastCollinearPoints = new FastCollinearPoints(points);
+	    segments = fastCollinearPoints.segments();
+	    StdOut.println(fastCollinearPoints.numberOfSegments());
+	    if (segments.length > 0) {
+	    	for (LineSegment lineSegment : segments) {
+				StdOut.println(lineSegment.toString());
+			}
+		}
+//		LineSegment[] lineSegments = bruteCollinearPoints.segments();
+//		StdOut.println(bruteCollinearPoints.numberOfSegments());
+//	    points[3] = new Point(23, 23);
+//	    StdOut.println(bruteCollinearPoints.numberOfSegments());
+//	    StdOut.println(bruteCollinearPoints.numberOfSegments());
+//	    LineSegment[] lineSegments1 = bruteCollinearPoints.segments();
+//	    StdOut.println(lineSegments.equals(lineSegments1));
+//	    lineSegments1 = new LineSegment[20];
+//	    
+//	    Point point7 = new Point(11036, 14218 );
+//	    Point[] pointsArg = {point7,null};
+//	    
+//	    bruteCollinearPoints = new BruteCollinearPoints(pointsArg);
+	    
+//	    Point[] points1 = {new Point(1,1),new Point(2,2), new Point(3,3), new Point(4,4)}; 
+//	    Point[] points2 = {new Point(1,1),new Point(2,2), new Point(3,3), new Point(4,4)}; 		
+//	    StdOut.println(points1.equals(points1));		
 	    // draw the points
 //	    StdDraw.enableDoubleBuffering();
 //	    StdDraw.setXscale(0, 32768);

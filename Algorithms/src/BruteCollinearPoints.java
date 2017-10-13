@@ -2,7 +2,7 @@ import edu.princeton.cs.algs4.*;
 public class BruteCollinearPoints {
 	
 	private final Point[] points;
-	private LineSegment[] returned;
+	private final LineSegment[] lineSegments;
 	private int segments = 0;
 	
 	public BruteCollinearPoints(Point[] points) {
@@ -10,33 +10,20 @@ public class BruteCollinearPoints {
 		if (points == null) {
 			throw new IllegalArgumentException();
 		}
-		for (int i = 0; i < points.length; i++) {
+		for (int i = 0; i < points.length; i++) {			
 			if (points[i] == null) {
 				throw new IllegalArgumentException();
 			}
 			for (int j = i+1; j < points.length; j++) {
-				if (points[i].compareTo(points[j])== 0) {
+				
+				if (points[j]==null || points[i].compareTo(points[j])== 0) {
 					throw new IllegalArgumentException();
 				}
 			}
 		}
 		this.points = points.clone();
 		segments = 0;
-	}
-	public int numberOfSegments() { // the number of line segments
-		return segments;
-	}
-	private int getArrayLength() {
-		return points.length;
-	}
-	private Point getPoint(int index) {
-		return points[index];
-	}
-	private Point[] getArray() {
-		return points.clone();
-	}
-	public LineSegment[] segments() { // the line segments
-		segments = 0;
+		
 		int pointsLength=getArrayLength();
 		LineSegment[]temp = new LineSegment[pointsLength];
 		Point point, point1, point2, point3;
@@ -61,15 +48,30 @@ public class BruteCollinearPoints {
 			}
 		}
 		j = 0;
-		returned = new LineSegment[segments];
+		this.lineSegments = new LineSegment[segments];
 		for (LineSegment lineSegment : temp) {
 			if (lineSegment != null) {
-				returned[j] = lineSegment;
+				lineSegments[j] = lineSegment;
 				j++;
 			}
 			
 		}
-		return returned.clone();
+	}
+	
+	public int numberOfSegments() { // the number of line segments
+		return this.lineSegments.length;
+	}
+	private int getArrayLength() {
+		return points.length;
+	}
+	private Point getPoint(int index) {
+		return points[index];
+	}
+	private Point[] getArray() {
+		return points.clone();
+	}
+	public LineSegment[] segments() { // the line segments
+		return this.lineSegments;
 	}
 	
 }
