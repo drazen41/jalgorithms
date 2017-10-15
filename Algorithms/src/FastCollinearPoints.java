@@ -2,6 +2,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import edu.princeton.cs.algs4.Merge;
+import edu.princeton.cs.algs4.StdOut;
 
 public class FastCollinearPoints {
 	private Point[]points;
@@ -41,31 +42,43 @@ public class FastCollinearPoints {
 		LineSegment[]temp = new LineSegment[pointsLength];
 		Point[] copy = new Point[pointsLength];
 		copy = this.points.clone();
-		Merge.sort(copy);
+		Point[] copy2 = copy.clone();
+		Merge.sort(copy2);
 		
 		for (int i = 0; i < pointsLength; i++) {
-			Arrays.sort(this.points, this.points[i].slopeOrder());
-			for (int j = 0; j < points.length-4; j++) {
-				Point origin = points[j];
-				Point point1 = points[j+1];
-				Point point2 = points[j+2];
-				Point point3 = points[j+3];
+			Point origin = copy2[i];
+			int numberOfPoints = 0;
+			Arrays.sort(copy2, copy2[i].slopeOrder());
+//			Merge.sort(copy2);
+			
+			for (int j = 1; j < copy2.length-2; j++) {				
+				Point point1 = copy2[j];
+				Point point2 = copy2[j+1];
+				Point point3 = copy2[j+2];
 				
 				LineSegment lineSegment = null;
 				boolean weHaveSegment = false;
 				if (origin.slopeTo(point1)==origin.slopeTo(point2) && origin.slopeTo(point2)==origin.slopeTo(point3)) {
 					lineSegment = new LineSegment(origin, point3);
 					weHaveSegment = true;
+					numberOfPoints = 4;
 				}
 				if (weHaveSegment) {
-					for (int k = 4; k < points.length; k++) {
-						Point point5 = points[k];
+					Point point5=null;
+					for (int k = j+3; k < copy2.length; k++) {
+						point5 = copy2[k];
 						if (origin.slopeTo(point3)==origin.slopeTo(point5)) {
 							lineSegment = new LineSegment(origin, point5);
+							numberOfPoints++;
 						}
 					}
 					temp[segments] = lineSegment;
 					segments++;
+//					StdOut.println("Segment " + segments + ": " +  origin.toString() + "->" + point1.toString() + "->" + point2.toString() +"->" + point3.toString());
+//					if (point5 != null) {
+//						StdOut.print("->" + point5.toString());
+//						StdOut.println();
+//					}
 				}
 				
 				
@@ -73,7 +86,7 @@ public class FastCollinearPoints {
 			
 			
 			
-			this.points = copy;
+			copy2 = copy.clone();
 		}
 
 			

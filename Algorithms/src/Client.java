@@ -39,9 +39,9 @@ public class Client {
 	        int y = in.readInt();
 	        points[i] = new Point(x, y);
 	    }
-	    for (Point point : points) {
-			StdOut.println(point.toString());
-		}
+//	    for (Point point : points) {
+//			StdOut.println(point.toString());
+//		}
 		BruteCollinearPoints bruteCollinearPoints = new BruteCollinearPoints(points);
 		LineSegment[] segments = bruteCollinearPoints.segments();
 //		StdOut.println(bruteCollinearPoints.numberOfSegments());
@@ -53,12 +53,12 @@ public class Client {
 //		
 	    FastCollinearPoints fastCollinearPoints = new FastCollinearPoints(points);
 	    segments = fastCollinearPoints.segments();
-	    StdOut.println(fastCollinearPoints.numberOfSegments());
-	    if (segments.length > 0) {
-	    	for (LineSegment lineSegment : segments) {
-				StdOut.println(lineSegment.toString());
-			}
-		}
+//	    StdOut.println(fastCollinearPoints.numberOfSegments());
+//	    if (segments.length > 0) {
+//	    	for (LineSegment lineSegment : segments) {
+//				StdOut.println(lineSegment.toString());
+//			}
+//		}
 //		LineSegment[] lineSegments = bruteCollinearPoints.segments();
 //		StdOut.println(bruteCollinearPoints.numberOfSegments());
 //	    points[3] = new Point(23, 23);
@@ -77,21 +77,21 @@ public class Client {
 //	    Point[] points2 = {new Point(1,1),new Point(2,2), new Point(3,3), new Point(4,4)}; 		
 //	    StdOut.println(points1.equals(points1));		
 	    // draw the points
-//	    StdDraw.enableDoubleBuffering();
-//	    StdDraw.setXscale(0, 32768);
-//	    StdDraw.setYscale(0, 32768);
-//	    for (Point p : points) {
-//	        p.draw();
-//	    }
-//	    StdDraw.show();
+	    StdDraw.enableDoubleBuffering();
+	    StdDraw.setXscale(0, 32768);
+	    StdDraw.setYscale(0, 32768);
+	    for (Point p : points) {
+	        p.draw();
+	    }
+	    StdDraw.show();
 
 	    // print and draw the line segments
-//	    FastCollinearPoints collinear = new FastCollinearPoints(points);
-//	    for (LineSegment segment : collinear.segments()) {
-//	        StdOut.println(segment);
-//	        segment.draw();
-//	    }
-//	    StdDraw.show();
+	    FastCollinearPoints collinear = new FastCollinearPoints(points);
+	    for (LineSegment segment : collinear.segments()) {
+	        StdOut.println(segment);
+	        segment.draw();
+	    }
+	    StdDraw.show();
 	    
 	}
 }
