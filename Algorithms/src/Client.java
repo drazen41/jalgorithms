@@ -77,13 +77,13 @@ public class Client {
 //	    Point[] points2 = {new Point(1,1),new Point(2,2), new Point(3,3), new Point(4,4)}; 		
 //	    StdOut.println(points1.equals(points1));		
 	    // draw the points
-	    StdDraw.enableDoubleBuffering();
-	    StdDraw.setXscale(0, 32768);
-	    StdDraw.setYscale(0, 32768);
-	    for (Point p : points) {
-	        p.draw();
-	    }
-	    StdDraw.show();
+//	    StdDraw.enableDoubleBuffering();
+//	    StdDraw.setXscale(0, 32768);
+//	    StdDraw.setYscale(0, 32768);
+//	    for (Point p : points) {
+//	        p.draw();
+//	    }
+//	    StdDraw.show();
 
 	    // print and draw the line segments
 	    FastCollinearPoints collinear = new FastCollinearPoints(points);
