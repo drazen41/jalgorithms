@@ -63,8 +63,8 @@ public class FastCollinearPoints {
 		Merge.sort(copy2);
 		
 		Point[] segmentPoints = new Point[4];
-		Point[] firsts = new Point[pointsLength/4];
-		
+		Point[] firsts = new Point[pointsLength];
+		int f = 0;
 		for (int i = 0; i < pointsLength; i++) {
 			Point origin = copy2[i];
 			
@@ -111,7 +111,7 @@ public class FastCollinearPoints {
 						}
 						
 					}
-					int f = 0;
+					
 					boolean newSegment = true;
 					for (Point point : firsts) {
 						if (point != null) {
