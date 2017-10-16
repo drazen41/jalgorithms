@@ -5,21 +5,36 @@ import edu.princeton.cs.algs4.Merge;
 import edu.princeton.cs.algs4.StdOut;
 
 public class FastCollinearPoints {
-	private class MyLineSegment implements Comparable<Point> {
-		private final Point p;   // one endpoint of this line segment
-	    private final Point q;   // the other endpoint of this line segment
+	private class MyLineSegment implements Comparable<MyLineSegment> {
+		private Point firstPoint;   // one endpoint of this line segment
+	    private Point lastPoint;   // the other endpoint of this line segment
 	    private double slope;
-	    private MyLineSegment(Point p, Point q) {
-	        if (p == null || q == null) {
+	    private MyLineSegment(Point firstPoint, Point lastPoint,double slope) {
+	        if (firstPoint == null || lastPoint == null) {
 	            throw new NullPointerException("argument is null");
 	        }
-	        this.p = p;
-	        this.q = q;
+	        this.firstPoint = firstPoint;
+	        this.lastPoint = lastPoint;
+	        this.slope = slope;
 	    }
 		@Override
-		public int compareTo(Point o) {
+		public int compareTo(MyLineSegment that) {
 			// TODO Auto-generated method stub
-			return 0;
+			if (this.slope == that.slope) {
+				if (this.firstPoint.compareTo(that.firstPoint)==0) {
+					if (this.lastPoint.compareTo(that.lastPoint) == 1) { //this last point greater than that last point
+						return 1;
+					} else if (this.lastPoint.compareTo(that.lastPoint)==0) {
+						return 0;
+					} else {
+						return -1;
+					}
+				}
+				
+			} else {
+				return -99;
+			}
+			return -99;
 		}
 	}
 	private Point[]points;
@@ -61,10 +76,11 @@ public class FastCollinearPoints {
 		copy = this.points.clone();
 		Point[] copy2 = copy.clone();
 		Merge.sort(copy2);
-		
+		MyLineSegment[] myLineSegments = new MyLineSegment[pointsLength];
 		Point[] segmentPoints = new Point[4];
-		Point[] firsts = new Point[pointsLength];
+		MyLineSegment myLineSegment = null;
 		int f = 0;
+		int mls = 0;
 		for (int i = 0; i < pointsLength; i++) {
 			Point origin = copy2[i];
 			
@@ -80,7 +96,7 @@ public class FastCollinearPoints {
 				LineSegment lineSegment = null;
 				boolean weHaveSegment = false;
 				if (origin.slopeTo(point1)==origin.slopeTo(point2) && origin.slopeTo(point2)==origin.slopeTo(point3)) {
-//					lineSegment = new LineSegment(origin, point3);
+//					lineSegment = new LineSegment(origin, point3);					
 					weHaveSegment = true;
 					segmentPoints[0] = origin;
 					segmentPoints[1] = point1;
@@ -89,6 +105,7 @@ public class FastCollinearPoints {
 					Merge.sort(segmentPoints);
 					first = segmentPoints[0];
 					last = segmentPoints[3];
+					myLineSegment = new MyLineSegment(first, last, first.slopeTo(last));
 				}
 				if (weHaveSegment) {
 					Point point5=null;
@@ -105,6 +122,7 @@ public class FastCollinearPoints {
 							if (point5.compareTo(last) == 1) {
 								last = point5;
 							}
+							myLineSegment = new MyLineSegment(first, last, first.slopeTo(last));
 							k++;
 						} else {
 							ok = false;
@@ -113,30 +131,41 @@ public class FastCollinearPoints {
 					}
 					
 					boolean newSegment = true;
-					for (Point point : firsts) {
-						if (point != null) {
-							
-							if (point.compareTo(first)==0) {
-								newSegment = false;
-							}
-							
+					
+					boolean stop = false;
+					int mlsLoop = 0;
+					while (!stop) {
+						MyLineSegment mlsTemp = myLineSegments[mlsLoop];
+						if (mlsTemp == null) {
+							stop = true;
+							continue;
 						}
-						
+						if (mlsTemp.compareTo(myLineSegment) == 0) { //same segment
+							stop = true;
+							newSegment = false;
+							
+						} else if (mlsTemp.compareTo(myLineSegment) == 1) { // last point entered greater that new one
+							stop = true;
+							newSegment = false;
+						} else if (mlsTemp.compareTo(myLineSegment) == -1) {
+							mlsTemp.lastPoint = myLineSegment.lastPoint;
+							stop = true;
+							newSegment = false;
+						}
+						mlsLoop++;
 					}
+					
 					if (newSegment) {
-						lineSegment = new LineSegment(first, last);
-						temp[segments] = lineSegment;
+//						lineSegment = new LineSegment(first, last);
+//						temp[segments] = lineSegment;
+						
 						segments++;
-						firsts[f] = segmentPoints[0];
-						f++;
+						myLineSegments[mls]=myLineSegment;
+						mls++;
 					}
 					
 					
-//					StdOut.println("Segment " + segments + ": " +  origin.toString() + "->" + point1.toString() + "->" + point2.toString() +"->" + point3.toString());
-//					if (numberOfSegments()>4 && point5 != null) {
-//						StdOut.print("->" + point5.toString());
-//						StdOut.println();
-//					}
+
 				}
 				
 				
@@ -150,13 +179,21 @@ public class FastCollinearPoints {
 			
 		int j = 0;
 		LineSegment[] returned = new LineSegment[segments];
-		for (LineSegment lineSegment : temp) {
+		for (MyLineSegment lineSegment : myLineSegments) {
 			if (lineSegment != null) {
-				returned[j] = lineSegment;
+				LineSegment lineSegment2 = new LineSegment(lineSegment.firstPoint, lineSegment.lastPoint);
+				returned[j] = lineSegment2;
 				j++;
 			}
-			
 		}
+		
+//		for (LineSegment lineSegment : temp) {
+//			if (lineSegment != null) {
+//				returned[j] = lineSegment;
+//				j++;
+//			}
+//			
+//		}
 		return returned;
 	}
 }

@@ -67,9 +67,7 @@ public class BruteCollinearPoints {
 	private Point getPoint(int index) {
 		return points[index];
 	}
-	private Point[] getArray() {
-		return points.clone();
-	}
+	
 	public LineSegment[] segments() { // the line segments
 		return this.lineSegments;
 	}
