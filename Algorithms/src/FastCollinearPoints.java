@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -21,15 +22,21 @@ public class FastCollinearPoints {
 		public int compareTo(MyLineSegment that) {
 			// TODO Auto-generated method stub
 			if (this.slope == that.slope) {
-				if (this.firstPoint.compareTo(that.firstPoint)==0) {
-					if (this.lastPoint.compareTo(that.lastPoint) == 1) { //this last point greater than that last point
-						return 1;
-					} else if (this.lastPoint.compareTo(that.lastPoint)==0) {
-						return 0;
-					} else {
-						return -1;
-					}
-				}
+				int firstResult = this.firstPoint.compareTo(that.firstPoint);
+				int lastResult = this.lastPoint.compareTo(that.lastPoint);
+				if (firstResult <= 0 && lastResult == 0 ) {
+					return 0;
+				} else if (firstResult == 0 && lastResult == -1) { // change Last
+					return 2;
+				} 
+//				if (this.firstPoint.compareTo(that.firstPoint)==0 && this.lastPoint.compareTo(that.lastPoint)==0) {
+//					return 0;
+//				} else if (this.firstPoint.compareTo(that.firstPoint) <0 && this.lastPoint.compareTo(that.lastPoint)==0) { //change first point
+//					return -1;
+//				} else if (this.firstPoint.compareTo(that.firstPoint)==0 && this.lastPoint.compareTo(that.lastPoint)<0) { // change last point
+//					return 1;
+//				}
+				
 				
 			} else {
 				return -99;
@@ -79,6 +86,7 @@ public class FastCollinearPoints {
 		MyLineSegment[] myLineSegments = new MyLineSegment[pointsLength];
 		Point[] segmentPoints = new Point[4];
 		MyLineSegment myLineSegment = null;
+		ArrayList<MyLineSegment> myLineSegmentsList = new ArrayList<>();
 		int f = 0;
 		int mls = 0;
 		for (int i = 0; i < pointsLength; i++) {
@@ -105,7 +113,7 @@ public class FastCollinearPoints {
 					Merge.sort(segmentPoints);
 					first = segmentPoints[0];
 					last = segmentPoints[3];
-					myLineSegment = new MyLineSegment(first, last, first.slopeTo(last));
+					myLineSegment = new MyLineSegment(first, last, origin.slopeTo(point3));
 				}
 				if (weHaveSegment) {
 					Point point5=null;
@@ -122,7 +130,7 @@ public class FastCollinearPoints {
 							if (point5.compareTo(last) == 1) {
 								last = point5;
 							}
-							myLineSegment = new MyLineSegment(first, last, first.slopeTo(last));
+							myLineSegment = new MyLineSegment(first, last, origin.slopeTo(point5));
 							k++;
 						} else {
 							ok = false;
@@ -134,6 +142,7 @@ public class FastCollinearPoints {
 					
 					boolean stop = false;
 					int mlsLoop = 0;
+					
 					while (!stop) {
 						MyLineSegment mlsTemp = myLineSegments[mlsLoop];
 						if (mlsTemp == null) {
@@ -143,15 +152,13 @@ public class FastCollinearPoints {
 						if (mlsTemp.compareTo(myLineSegment) == 0) { //same segment
 							stop = true;
 							newSegment = false;
-							
-						} else if (mlsTemp.compareTo(myLineSegment) == 1) { // last point entered greater that new one
+													
+						} else if (mlsTemp.compareTo(myLineSegment) == 2) {
+							myLineSegments[mlsLoop].lastPoint = myLineSegment.lastPoint;						
 							stop = true;
 							newSegment = false;
-						} else if (mlsTemp.compareTo(myLineSegment) == -1) {
-							mlsTemp.lastPoint = myLineSegment.lastPoint;
-							stop = true;
-							newSegment = false;
-						}
+						} 
+						
 						mlsLoop++;
 					}
 					

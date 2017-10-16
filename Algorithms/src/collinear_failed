@@ -17,3 +17,42 @@ Test 1: points from a file
 * filename = input299.txt 
 ==> FAILED
 
+Test 5a: points from a file with 5 or more on some line segments 
+* filename = input9.txt 
+- segments() contains a subsegment of a segment in reference solution 
+- student segment 0: (1000, 1000) -> (4000, 4000) 
+- reference segment 0: (1000, 1000) -> (2000, 2000) -> (3000, 3000) -> (4000, 4000) -> (5000, 5000) -> (6000, 6000) -> (7000, 7000) -> (8000, 8000) -> (9000, 9000) 
+- number of entries in student solution: 5 
+- number of entries in reference solution: 1 
+- 4 extra entries in student solution, including: '(1000, 1000) -> (7000, 7000)' 
+* filename = input10.txt 
+- segments() contains a subsegment of a segment in reference solution 
+- student segment 0: (1000, 18000) -> (3500, 28000) 
+- reference segment 1: (1000, 18000) -> (2000, 22000) -> (3000, 26000) -> (3500, 28000) -> (4000, 30000) 
+- number of entries in student solution: 3 
+- number of entries in reference solution: 2 
+- 1 extra entry in student solution: '(1000, 18000) -> (3500, 28000)' 
+* filename = input20.txt 
+- segments() contains a subsegment of a segment in reference solution 
+- student segment 4: (4160, 29184) -> (7168, 29184) 
+- reference segment 2: (4160, 29184) -> (5120, 29184) -> (6144, 29184) -> (7168, 29184) -> (8192, 29184) 
+- number of entries in student solution: 6 
+- number of entries in reference solution: 5 
+- 1 extra entry in student solution: '(4160, 29184) -> (7168, 29184)' 
+* filename = input50.txt 
+* filename = input80.txt 
+- segments() contains a subsegment of a segment in reference solution 
+- student segment 11: (8000, 8000) -> (21000, 8000) 
+- reference segment 8: (8000, 8000) -> (9000, 8000) -> (12000, 8000) -> (21000, 8000) -> (25000, 8000) 
+- number of entries in student solution: 34 
+- number of entries in reference solution: 31 
+- 3 extra entries in student solution, including: '(0, 23000) -> (26000, 23000)' 
+* filename = input300.txt 
+* filename = inarow.txt 
+- segments() contains a subsegment of a segment in reference solution 
+- student segment 2: (0, 0) -> (0, 11000) 
+- reference segment 4: (0, 0) -> (0, 5000) -> (0, 10000) -> (0, 11000) -> (0, 15000) -> (0, 20000) -> (0, 25000) -> (0, 30000) 
+- number of entries in student solution: 9 
+- number of entries in reference solution: 5 
+- 4 extra entries in student solution, including: '(0, 5000) -> (0, 25000)' 
+==> FAILED 
