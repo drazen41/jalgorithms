@@ -1,5 +1,5 @@
 import edu.princeton.cs.algs4.*;
-public class BruteCollinearPoints {
+public final class BruteCollinearPoints {
 	
 	private final Point[] points;
 	private final LineSegment[] lineSegments;
@@ -21,7 +21,10 @@ public class BruteCollinearPoints {
 				}
 			}
 		}
-		this.points = points.clone();
+		this.points = new Point[points.length];
+		for (int i = 0; i < points.length; i++) {
+			this.points[i] = points[i];
+		}
 		segments = 0;
 		
 		int pointsLength=getArrayLength();
