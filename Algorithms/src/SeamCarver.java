@@ -7,7 +7,7 @@ public class SeamCarver {
 
 	private Picture picture ;
 	private double[][] energies;
-	private double[] seam;
+	private int[] seam;
 //	private double[][] energiesVertical;
 //	private double[][] energiesHorizontal;
 	public SeamCarver(Picture picture) {                // create a seam carver object based on the given picture
@@ -86,8 +86,9 @@ public class SeamCarver {
 	}
 	public int[] findVerticalSeam() { // sequence of indices for vertical seam
 		energies = new double[width()][height()];
-		seam = new double[height()];
-		double minBefore = 0, min = 0;
+		seam = new int[height()];
+		double min = 0;
+		int minCol = 0;
 		for (int row = 0; row < height(); row++) {
             for (int col = 0; col < width(); col++)
                 energies[col][row] = energy(col, row);
@@ -99,10 +100,19 @@ public class SeamCarver {
 			for (int j = 0; j < width()-1; j++) {
 				if (energies[j][i] < min) {
 					min = energies[j][i];
-					
+					minCol = j;
+					if (i == 1) {
+						seam[0] = minCol;
+						
+					}
+					if (i == height()-1) {
+						
+						seam[height()-1] = minCol;
+					}
 				}
+				
 			}
-			seam[i] = min;
+			seam[i] = minCol;
 		}
 		return null;
 	}
