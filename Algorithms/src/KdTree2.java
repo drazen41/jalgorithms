@@ -2,6 +2,8 @@ import java.util.Comparator;
 
 import javax.xml.bind.annotation.XmlElementDecl.GLOBAL;
 
+import org.w3c.dom.NodeList;
+
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.Queue;
@@ -29,16 +31,13 @@ public class KdTree2 {
 	public KdTree2() {
 		// TODO Auto-generated constructor stub
 //		root = new Node();
-		root = new Node();			
-//		root.point2d = p;
-		RectHV rectHV = new RectHV(0, 0, 1, 1);
-		root.rectHV = rectHV;
+
 	}
 	public  boolean isEmpty() {                   
 		return root.point2d == null;
 	}
 	public int size() {                         
-		if (root.point2d == null) {
+		if (root == null) {
 			return 0;
 		}
 		return (size(root));
@@ -58,101 +57,103 @@ public class KdTree2 {
 		Node node = null;
 
 		if (size == 0) {
-
-//			root.RED = true;
+			root = new Node();
+			root.point2d = p;
+			root.rectHV = new RectHV(0, 0, 1, 1);
+			root.RED = true;
 			
 		} else {
-			
+			node = root;
+			Node newNode = new Node();
+			newNode.point2d = p;
+			boolean stop = false;
+			int i = 1;
+			double xmin, xmax, ymin,ymax;
+			RectHV rectHV = null;
+			while(!stop) {
+				
+//				if (node.leftBottom != null && node.rightTop != null) {
+//					
+//					i++;
+//					continue;
+//				}
+				if (i % 2 == 1) { //compare by x, horizontal
+					if (newNode.point2d.x() < node.point2d.x()) { // go left
+						if (node.leftBottom != null) {
+							node = node.leftBottom;
+							i++;
+							continue;
+						}
+						node.leftBottom = newNode;
+						newNode.BLUE = true;
+						xmin = node.rectHV.xmin();
+						ymin = node.rectHV.ymin();
+						xmax = node.point2d.x();
+						ymax = newNode.point2d.y();
+						rectHV = new RectHV(xmin, ymin, xmax, ymax);
+						node.leftBottom.rectHV = rectHV;
+						stop = true;
+						continue;
+					} else { // go right
+						if (node.rightTop != null) {
+							node = node.rightTop;
+							i++;
+							continue;
+						}
+						
+						newNode.BLUE = true;					
+						xmin = node.point2d.x();
+						xmax = node.rectHV.xmax();
+						ymin = node.rectHV.ymin();
+						ymax = node.rectHV.ymax();
+						rectHV = new RectHV(xmin, ymin, xmax, ymax);
+						newNode.rectHV = rectHV;
+						node.rightTop = newNode;
+						stop = true;
+						continue;
+					}
+				} else { // compare by y, vertical
+					
+					if (newNode.point2d.y() < node.point2d.y()) {
+						if (node.leftBottom != null) {
+							node = node.leftBottom;
+							i++;
+							continue;
+						}	
+						newNode.RED = true;
+						xmin = node.rectHV.xmin();
+						xmax = node.rectHV.xmax();
+						ymin = node.rectHV.ymin();
+						ymax = node.point2d.y();
+						rectHV = new RectHV(xmin, ymin, xmax, ymax);
+						newNode.rectHV = rectHV;
+						node.leftBottom = newNode;
+						stop = true;
+						continue;
+					} else {
+						if (node.rightTop != null) {
+							node = node.rightTop;
+							i++;
+							continue;
+						}
+						newNode.RED = true;
+						xmin = node.rectHV.xmin();
+						xmax = node.rectHV.xmax();
+						ymin = node.point2d.y();
+						ymax = node.rectHV.ymax();
+						rectHV = new RectHV(xmin, ymin, xmax, ymax);
+						newNode.rectHV = rectHV;
+						node.rightTop = newNode;
+						stop = true;
+						continue;
+					}
+				}
+				
+			}
+
 			// cut
 		}
-		node = root;
-		Node newNode = new Node();
-		newNode.point2d = p;
-		boolean stop = false;
-		int i = 0;
-		double xmin, xmax, ymin,ymax;
-		RectHV rectHV = null;
-		while(!stop) {
-			
-//			if (node.leftBottom != null && node.rightTop != null) {
-//				
-//				i++;
-//				continue;
-//			}
-			if (i % 2 == 1) { //compare by x, horizontal
-				if (newNode.point2d.x() < node.rectHV.xmax()) { // go left
-					if (node.leftBottom != null) {
-						node = node.leftBottom;
-						i++;
-						continue;
-					}
-					node.leftBottom = newNode;
-					newNode.BLUE = true;
-					xmin = node.rectHV.xmin();
-					ymin = node.rectHV.ymin();
-					xmax = node.rectHV.xmax();
-					ymax = newNode.point2d.y();
-					rectHV = new RectHV(xmin, ymin, xmax, ymax);
-					node.leftBottom.rectHV = rectHV;
-					stop = true;
-					continue;
-				} else { // go right
-					if (node.rightTop != null) {
-						node = node.rightTop;
-						i++;
-						continue;
-					}
-					
-					newNode.BLUE = true;					
-					xmin = node.rectHV.xmin();
-					xmax = node.rectHV.xmax();
-					ymin = node.rectHV.ymin();
-					ymax = newNode.point2d.y();
-					rectHV = new RectHV(xmin, ymin, xmax, ymax);
-					newNode.rectHV = rectHV;
-					node.rightTop = newNode;
-					stop = true;
-					continue;
-				}
-			} else { // compare by y, vertical
 				
-				if (newNode.point2d.y() < node.rectHV.ymax()) {
-					if (node.leftBottom != null) {
-						node = node.leftBottom;
-						i++;
-						continue;
-					}	
-					newNode.RED = true;
-					xmin = newNode.point2d.x();
-					xmax = node.rectHV.xmax();
-					ymin = node.rectHV.ymin();
-					ymax = node.rectHV.ymax();
-					rectHV = new RectHV(xmin, ymin, xmax, ymax);
-					newNode.rectHV = rectHV;
-					node.leftBottom = newNode;
-					stop = true;
-					continue;
-				} else {
-					if (node.rightTop != null) {
-						node = node.rightTop;
-						i++;
-						continue;
-					}
-					newNode.RED = true;
-					xmin = newNode.point2d.x();
-					xmax = node.rectHV.xmax();
-					ymin = node.rectHV.ymax();
-					ymax = 1;
-					rectHV = new RectHV(xmin, ymin, xmax, ymax);
-					newNode.rectHV = rectHV;
-					node.rightTop = newNode;
-					stop = true;
-					continue;
-				}
-			}
-			
-		}
-		
 		
 	}
 	
