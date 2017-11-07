@@ -1,7 +1,7 @@
 import java.awt.Color;
 
-
 import edu.princeton.cs.algs4.Picture;
+import edu.princeton.cs.algs4.Stack;
 
 
 
@@ -13,7 +13,7 @@ public class SeamCarver {
 	private int[] edgeTo;
 	private int[][] pathTo;
 	private double[][] distTo;
-	private double minEnergy = 1000;
+	private double minEnergy = 0;
 	
 	
 //	private double[][] energiesVertical;
@@ -92,16 +92,51 @@ public class SeamCarver {
 		energies = new double[width()][height()];
 		seam = new int[height()];
 		distTo = new double[height()][width()];
-		pathTo = new int[width()][height()];
-		edgeTo = new int[height()];
-		double[][] energyMatrix = new double[width()][height()];
-		double localEnergy = height() * 1000;
-		for (int row = 0; row < height(); row++) {
-            for (int col = 0; col < width(); col++) {
-               energies[col][row] = energy(col, row);
-               relax(row, col);
+		pathTo = new int[height()][width()];
+//		edgeTo = new int[height()];
+//		double[][] energyMatrix = new double[width()][height()];
+//		double localEnergy = height() * 1000;
+		this.minEnergy = height() * 1000;
+		
+		if (width()==1) {
+			for (int i = 0; i < height(); i++) {
+				energies[0][i] = energy(0, i);
+				seam[i] = 0;
 			}
-        }
+			
+		} else {
+			for (int row = 0; row < height(); row++) {
+	            for (int col = 0; col < width(); col++) {
+	               energies[col][row] = energy(col, row);
+	               relax(row, col);
+				}
+	        }
+			boolean stop = false;
+			int i = 0;
+			while (!stop) {
+				if (distTo[height()-1][i] == this.minEnergy) {
+					int col = i;
+					seam[height()-1] = col;
+					for (int j = height()-1; j > 0; j--) {
+						col = pathTo[j][col];
+						seam[j-1] = col;
+					}
+					stop = true;
+				} else {
+					i++;
+				}
+			}
+		}
+		
+		
+		
+		
+//		for (int i = 0; i < width(); i++) {
+//			for (int j = 0; j < height(); j++) {
+//				relax(i,j);
+//			}
+//			
+//		}
 //		for (int i = 0; i < width()-1; i++) {
 //			//double me = 
 //			this.minEnergy = 1000;
@@ -120,51 +155,89 @@ public class SeamCarver {
 //				seam = edgeTo.clone();
 //			}
 //		}
-		edgeTo = null;
+//		edgeTo = null;
 		return seam;
 	}
-	private void relax (int row, int col) {
+	private void relax(int row, int col) {
+		double currentEnergy = energies[col][row];
 		if (row == 0) {
 			distTo[row][col] = 1000;
-			pathTo[col][row] = col;
-		} else if (row == 1) {
-			distTo[row][col] = energies[col][row-1] + energies[col][row];
-			pathTo[col][row] = col;
-		} else if (col == 0) {
-			double up = distTo[row-1][col];
-			double upRight = distTo[row-1][col+1];
-			if (up < upRight) {
-				distTo[row][col] = up + energies[col][row];
-				pathTo[col][row] = col;
-			} else {
-				distTo[row][col] = upRight + energies[col][row];
-				pathTo[col][row] = col+1;
-			}
-		}  else if (col == width()-1) {
-			double up = distTo[row-1][col];
-			double upLeft = distTo[row-1][col-1];
-			if (up < upLeft) {
-				distTo[row][col] = up + energies[col][row];
-				pathTo[col][row] = col;
-			} else {
-				distTo[row][col] = upLeft + energies[col][row];
-				pathTo[col][row] = col-1;
-			}
+			pathTo[row][col] = col;
 		} else {
-			double up = distTo[row-1][col];
-			double upRight = distTo[row-1][col+1];
-			double upLeft = distTo[row-1][col-1];
-			if (up < upRight && up < upLeft ) {
-				distTo[row][col] = up + energies[col][row];
-				pathTo[col][row] = col;
-			} else if (upRight < up && upRight < upLeft) {
-				distTo[row][col] = upRight + energies[col][row];
-				pathTo[col][row] = col+1;
+			if (col == 0) {
+				double a = distTo[row-1][col];
+				double b = distTo[row-1][col+1] ;
+				if (a < b ) {
+					distTo[row][col] = a + currentEnergy;
+					pathTo[row][col] = col;
+				} else {
+					distTo[row][col] = b + currentEnergy;
+					pathTo[row][col] = col+1;
+				}
+			} else if (col == width()-1) {
+				double a = distTo[row-1][col];
+				double b = distTo[row-1][col-1] ;
+				if (a < b ) {
+					distTo[row][col] = a + currentEnergy;
+					pathTo[row][col] = col;
+				} else {
+					distTo[row][col] = b + currentEnergy;
+					pathTo[row][col] = col-1;
+				}
 			} else {
-				distTo[row][col] = upLeft + energies[col][row];
-				pathTo[col][row] = col-1;
+				double a = distTo[row-1][col];
+				double b = distTo[row-1][col+1] ;
+				double c = distTo[row-1][col-1] ;
+				if (a <= b && a <= c ) {
+					distTo[row][col] = a + currentEnergy;
+					pathTo[row][col] = col;
+				} else if (b < a && b < c) {
+					distTo[row][col] = b + currentEnergy;
+					pathTo[row][col] = col+1;
+				} else {
+					distTo[row][col] = c + currentEnergy;
+					pathTo[row][col] = col-1;
+				}
+			}
+			
+		}
+		if (row == height()-1) {
+			if (distTo[row][col]<this.minEnergy) {
+				this.minEnergy = distTo[row][col];
 			}
 		}
+	}
+	private void relaxStack (int row, int col) {
+//		if (col < 0 || col > width()-1) {
+//			return;
+//		}
+//		if (row == height()) {
+//			double t = stack.peek();
+//			if (t < this.minEnergy ) {
+//				this.minEnergy = t;
+//			}
+//			return;
+//		}
+//		double thisEnergy = energy(col, row);
+//		 
+//		if (row == 0) {
+//			stack.push(thisEnergy);
+//		} else {
+//			double sumBefore =stack.peek();
+//			stack.push(sumBefore + thisEnergy);
+//		}
+		
+		relax(row+1, col-1);
+//		if (col-1 >= 0) {
+//			stack.pop();
+//		}		
+		relax(row+1, col);
+		
+		relax(row+1, col+1);
+//		stack.pop();
+//		if (col +1 < height()) {
+//			stack.pop();
+//		}
 	}
 	private void relaxUp(int row, int col) {
 		edgeTo[row] = col;
