@@ -1,15 +1,17 @@
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.TreeSet;
-
 import edu.princeton.cs.algs4.*;
 
 public final class BoggleSolver {
-	private TrieSET dictionary;
+	private TST dictionary;
 	
-	private TreeSet<String> validWords;
+	private HashSet<String> validWords;
+	private char startChar;
+	private int charCount;
+	private int startRow;
+	private int startCol;
+	private boolean stop;
+	private boolean checked;
 	private BoggleBoard boggleBoard;
 	private StringBuilder word;
 	private boolean[][] visited;
@@ -19,11 +21,11 @@ public final class BoggleSolver {
 	private String[] aDictionary;
 	private HashSet<String> prefixNotInDictionary;
 	//private HashSet<String> boardStrings;
-	private HashSet<String> hDict;
+	private HashSet<String> allWords;
 	// Initializes the data structure using the given array of strings as the dictionary.
     // (You can assume each word in the dictionary contains only the uppercase letters A through Z.)
     public BoggleSolver(String[] dictionary) {
-    	//this.hDict = new HashSet<String>();
+    	this.allWords = new HashSet<String>();
     	
     	aDictionary = dictionary;
     	createTries();
@@ -39,64 +41,26 @@ public final class BoggleSolver {
     	this.prefixes = new Queue<String>();
     }
     private void createTries() {
-    	this.dictionary = new TrieSET();
+    	this.dictionary = new TST();
+    	//this.dictionary.add("Noqueue");
     	for (String word : aDictionary) {
 			
-			this.dictionary.add(word);
+			
 		}
+    	for (int i = 0; i < aDictionary.length; i++) {
+    		this.dictionary.put(aDictionary[i], i);
+		}
+    	aDictionary = null;
     }
     private void cleanTries() {
-    	int maxWord = this.boardCols * this.boardRows;
-    	for (String word : dictionary) {
-			if (word.length() > maxWord) {
-				dictionary.delete(word);
-			}
-		}
-    }
-    // Returns the set of all valid words in the given Boggle board, as an Iterable.
-    public Iterable<String> getAllValidWords(BoggleBoard board) {
-    	this.boggleBoard = board;
-    	if (this.boardCols != board.cols() || this.boardRows != board.rows()) {
-    		this.boardCols = board.cols();
-    		this.boardRows = board.rows();
-    		cleanTries();
-		}
-    	
-    	
-    	
-    	
-    	this.prefixNotInDictionary = new HashSet<String>();
-    	validWords = new TreeSet<String>();
-    	//createTries();
-    	this.visited = new boolean[board.rows()][board.cols()];
-    	StringBuilder builder = new StringBuilder();
-    	for (int i = 0; i < boggleBoard.rows(); i++) {   		
-    		for (int j = 0; j < boggleBoard.cols(); j++) {
-//    			builder.append(boggleBoard.getLetter(i, j));
-//    			prefixes = (Queue<String>)dictionary.keysWithPrefix(builder.toString());
-//    			if (prefixes.isEmpty()) {
-//					continue;
-//				}
-    			this.word.setLength(0);
-    			dfs(i, j);
-    			
-    			//builder.setLength(0);
-    			//composeString(i, j);
-    			//printStrings();
-			}
-		}
-//    	for (String string : boardStrings) {
-//			for (String dict : dictionary) {
-//				if (dict.equals(string)) {
-//					validWords.add(string);
-//				}
+    	int maxWord = (this.boardCols * this.boardRows)*2;
+//    	for (String word : dictionary) {
+//			if (word.length() > maxWord) {
+//				dictionary.delete(word);
 //			}
 //		}
-    	
-    	return validWords;
     }
-
-    private void dfs(int row, int col) {
+    private void getAllWords(int row, int col) {
     	if (row > this.boardRows-1 || col > this.boardCols-1 || row < 0 || col < 0) {
 //    		if (this.word.length()>1) {
 //    			word.setLength(word.length()-1);
@@ -106,9 +70,117 @@ public final class BoggleSolver {
 		}
     	if (visited[row][col]) {
 		//word.setLength(word.length()-1);
-		return;
-	}
+    		return;
+    	}
     	char letter = boggleBoard.getLetter(row, col);
+    	if (letter == 'Q' ) {
+			word.append(letter + "U");
+		} else {
+			word.append(letter);
+		}
+    	visited[row][col] = true;
+    	if (word.length()> 2) {
+			allWords.add(word.toString());
+		}
+    	dfs(row, col+1);
+    	dfs(row, col-1);
+    	dfs(row+1, col+1);
+    	dfs(row+1, col);
+    	dfs(row+1, col-1);
+    	dfs(row-1, col+1);
+    	dfs(row-1, col);
+    	dfs(row-1, col-1);
+    	if (word.length()>1) {
+    		if (word.charAt(word.length()-2)=='Q') {
+    			word.setLength(word.length()-2);
+    		} else {
+    			word.setLength(word.length()-1);
+    		}
+		} else {
+			word.setLength(word.length()-1);
+		}
+    	
+    	visited[row][col] = false;
+    }
+    private void checkBoard() {
+    	boolean checked = true;
+    	char firstChar = this.boggleBoard.getLetter(0, 0); 
+    	char secondChar;
+    	
+    	for (int i = 0; i < this.boardRows; i++) {
+			for (int j = 0; j < this.boardCols; j++) {
+				secondChar = this.boggleBoard.getLetter(i, j);
+				if (firstChar != secondChar) {
+					this.checked = false;
+					return;
+				}
+			}
+		}
+    	this.checked = true;
+    }
+    // Returns the set of all valid words in the given Boggle board, as an Iterable.
+    public Iterable<String> getAllValidWords(BoggleBoard board) {
+    	
+    	this.boggleBoard = board;
+    	this.boardRows = board.rows();
+    	this.boardCols = board.cols();
+    	if (this.boardCols > 3) {
+    		checkBoard(); 
+		}
+    	
+    	
+    	
+    	
+    	
+    	this.prefixNotInDictionary = new HashSet<String>();
+    	validWords = new HashSet<String>();
+    	//createTries();
+    	this.visited = new boolean[board.rows()][board.cols()];
+    	//StringBuilder builder = new StringBuilder();
+    	for (int i = 0; i < boggleBoard.rows(); i++) {   		
+    		for (int j = 0; j < boggleBoard.cols(); j++) {
+//    			builder.append(boggleBoard.getLetter(i, j));
+//    			prefixes = (Queue<String>)dictionary.keysWithPrefix(builder.toString());
+//    			if (prefixes.isEmpty()) {
+//					continue;
+//				}
+    			startRow = i;
+    			startCol = j;
+    			startChar = board.getLetter(i, j);
+    			
+    			this.word.setLength(0);
+    			dfs(i, j);
+    			
+    			//builder.setLength(0);
+    			//composeString(i, j);
+    			//printStrings();
+			}
+		}
+    	this.boggleBoard = null;
+    	this.visited = null;
+    	
+    	
+    	return validWords;
+    }
+
+    private void dfs(int row, int col) {
+//    	StdOut.println("Word: " + word.toString() + ", Row:" + row + ", Col:" + col);
+    	if (stop) {
+			return;
+		}
+    	if (row > this.boardRows-1 || col > this.boardCols-1 || row < 0 || col < 0) {
+//    		if (this.word.length()>1) {
+//    			word.setLength(word.length()-1);
+//			}
+    		
+    		return;
+		}
+    	if (visited[row][col]) {
+		//word.setLength(word.length()-1);
+    		return;
+    	}
+    	char letter = boggleBoard.getLetter(row, col);
+    	
     	if (letter == 'Q' ) {
 			word.append(letter + "U");
 		} else {
@@ -122,7 +194,9 @@ public final class BoggleSolver {
 //    	if (word.length() < 3) {
 //			return;
 //		}
-    	
+//    	if (validWords.contains(word.toString())) {
+//			return;
+//		}
     	if (!startsWith(word.toString())) {
     		if (word.length()>1) {
         		if (word.charAt(word.length()-2)=='Q') {
@@ -144,13 +218,14 @@ public final class BoggleSolver {
     	
     	if (word.length()> 2) {
 			validWord = dictionary.contains(word.toString());
-			if (validWord) {
+			if (validWord && !validWords.contains(word.toString())) {
 				validWords.add(word.toString());
 			} else {
 				//word.setLength(word.length()-1);
 //				stop = true;
 //				visited[row][col] = false;
 //				visited = new boolean[this.boardRows][this.boardCols];
+				//return;
 			}
 		}
     	dfs(row, col+1);
@@ -165,18 +240,24 @@ public final class BoggleSolver {
 //    		visited = new boolean[boggleBoard.rows()][boggleBoard.cols()];
 //    		visited[row][col] = true;
 //		}
+    	String longest = this.dictionary.longestPrefixOf(word.toString());
     	if (word.length()>1) {
     		if (word.charAt(word.length()-2)=='Q') {
     			word.setLength(word.length()-2);
     		} else {
     			word.setLength(word.length()-1);
     		}
+    		
 		} else {
 			word.setLength(word.length()-1);
+			
 		}
     	
     	visited[row][col] = false;
-    	
+    	//StdOut.println("Word: " + word.toString() + ", Row:" + row + ", Col:" + col);
+    	if (this.checked) {
+			stop = true;
+		}
     	
     }
     private boolean startsWith(String text) {
@@ -261,6 +342,9 @@ public final class BoggleSolver {
     // Returns the score of the given word if it is in the dictionary, zero otherwise.
     // (You can assume the word contains only the uppercase letters A through Z.)
     public int scoreOf(String word) {
+    	if (!dictionary.contains(word)) {
+			return 0;
+		}
     	switch (word.length()) {
     	case 3:
     	case 4:
