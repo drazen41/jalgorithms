@@ -18,7 +18,7 @@ public class BoggleTest {
 	    Runtime runtime = Runtime.getRuntime();
 	    StdOut.println(runtime.totalMemory() - runtime.freeMemory());
 	   
-	    BoggleBoard board = new BoggleBoard(boards[8]);
+	    BoggleBoard board = new BoggleBoard(boards[4]);
 	    int score = 0;
 //	    StdOut.println(solver.scoreOf("gracechurch"));
 	    board = null;
@@ -27,7 +27,7 @@ public class BoggleTest {
 	    	//board = new BoggleBoard();
 	    	//stopwatch = new Stopwatch();  
 			for (String word : solver.getAllValidWords(board)) {
-		       // StdOut.println(word);
+//		        StdOut.println(word);
 		        score += solver.scoreOf(word);
 		      
 			}

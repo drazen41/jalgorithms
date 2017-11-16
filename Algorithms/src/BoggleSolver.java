@@ -3,7 +3,7 @@ import java.util.TreeSet;
 import edu.princeton.cs.algs4.*;
 
 public final class BoggleSolver {
-	private TST dictionary;
+	private TST<Integer> dictionary;
 	
 	private HashSet<String> validWords;
 	private char startChar;
@@ -41,7 +41,7 @@ public final class BoggleSolver {
     	this.prefixes = new Queue<String>();
     }
     private void createTries() {
-    	this.dictionary = new TST();
+    	this.dictionary = new TST<Integer>();
     	//this.dictionary.add("Noqueue");
     	for (String word : aDictionary) {
 			
