@@ -12,7 +12,7 @@ public class BoggleTest {
 		In in = new In(dicts[1]);
 	    String[] dictionary = in.readAllStrings();
 	    BoggleSolver solver = new BoggleSolver(dictionary);
-	    StdOut.println("Elapsed time: " + stopwatch.elapsedTime());
+	    StdOut.println("Trie creation elapsed time: " + stopwatch.elapsedTime());
 	    int entries = 0;
 	    //StdOut.println(ObjectSizeFetcher.getObjectSize(solver));
 	    Runtime runtime = Runtime.getRuntime();
@@ -37,6 +37,7 @@ public class BoggleTest {
 			  score = 0;
 		}
 	    
+            
 //	    
 	    
 //		for (String word : solver.getAllValidWords(board)) {
