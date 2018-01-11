@@ -1,4 +1,8 @@
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import edu.princeton.cs.algs4.BreadthFirstDirectedPaths;
@@ -7,6 +11,7 @@ import edu.princeton.cs.algs4.DirectedCycle;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.Stopwatch;
 
 public class WordNet {
 	 
@@ -29,6 +34,7 @@ public class WordNet {
 	   private Digraph digraph;
 	   private int vertices;
 	   private HashMap<Integer,String> synsetIds;
+	   private Boolean rooted = true;
 	   // constructor takes the name of the two input files
 	   public WordNet(String synsets, String hypernyms) {
 		   if (synsets == null || hypernyms == null) {
@@ -36,8 +42,21 @@ public class WordNet {
 		   }
 		   In hypernymsText = new In(hypernyms);
 		   String[] lines = hypernymsText.readAllLines();
-		   
-		   digraph = new Digraph(lines.length+1);
+		  
+		  int max = 0;
+		  for (String line : lines) {
+			   String[] elements = line.split(",");
+			   int v = Integer.parseInt(elements[0]);
+			   for (int i=1; i<elements.length;i++) {
+				   int w = Integer.parseInt(elements[i]);
+				  if (w > max) {
+					max = w;
+				}
+			   }
+			   
+		   }
+		  
+		   digraph = new Digraph(max+1);
 		   this.vertices = lines.length;
 		   for (String line : lines) {
 			   String[] elements = line.split(",");
@@ -51,7 +70,10 @@ public class WordNet {
 		   DirectedCycle dcycle = new DirectedCycle(digraph);
 		   if (dcycle.hasCycle())
 			   throw new IllegalArgumentException();
-		   
+		   // check rooted
+		   checkRooted();
+		   if (!this.rooted )
+			   throw new IllegalArgumentException("Digraph not rooted");
 		   In synsetsText = new In(synsets);
 		   nouns = new HashMap<String,Queue<Synset>>();
 		   synsetIds = new HashMap<Integer,String>();
@@ -85,7 +107,18 @@ public class WordNet {
 		   }
 		   
 	   }
-
+	   private void checkRooted() {
+		   
+		   int count = 0;
+		   for (int i = 0; i < this.digraph.V(); i++) {
+			   if (this.digraph.indegree(i)==0 && this.digraph.outdegree(i)==0)
+				   continue;
+			   if (this.digraph.outdegree(i)==0 && this.digraph.indegree(i)>0)
+				   count++;
+			   
+		   }
+		   if (count>1) this.rooted = false;
+	   }
 	   // returns all WordNet nouns
 	   public Iterable<String> nouns() {
 		   return nouns.keySet();
@@ -142,15 +175,22 @@ public class WordNet {
 
 	   // do unit testing of this class
 	   public static void main(String[] args) {
-
+		   Stopwatch stopwatch = new Stopwatch();
 		   WordNet wordNet = new WordNet(args[0],args[1]);
 //		   for (String noun : wordNet.nouns()) {
 //			   StdOut.println(noun);
 //		   }
-		   StdOut.println(wordNet.isNoun("fibrinase"));
-		   StdOut.println(wordNet.isNoun("abrakadabra"));
-		   StdOut.println(wordNet.distance("worm", "bird"));
-		   StdOut.println(wordNet.sap("worm", "bird"));
+//		   StdOut.println( stopwatch.elapsedTime());
+//		   StdOut.println(wordNet.isNoun("fibrinase"));
+//		   StdOut.println(wordNet.isNoun("abrakadabra"));
+//		   StdOut.println(wordNet.distance("worm", "bird"));
+//		   StdOut.println(wordNet.sap("worm", "bird"));
+		   
+		   StdOut.println(wordNet.isNoun("f"));
+		   StdOut.println(wordNet.isNoun("a"));
+		   StdOut.println(wordNet.distance("f", "a"));
+		   StdOut.println(wordNet.sap("f", "a"));
+		   
 	   }
 
 }
