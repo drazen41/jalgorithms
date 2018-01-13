@@ -1,11 +1,10 @@
+import edu.princeton.cs.algs4.*;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 
-import edu.princeton.cs.algs4.BreadthFirstDirectedPaths;
-import edu.princeton.cs.algs4.Digraph;
-import edu.princeton.cs.algs4.In;
-import edu.princeton.cs.algs4.Queue;
-import edu.princeton.cs.algs4.StdOut;
+
 
 public final class SAP {
 		
@@ -13,7 +12,13 @@ public final class SAP {
 		private final Digraph digraph;
 		private int ancestor;
 		private int length;
-		
+                private Bag<Integer> sources;
+                private class Ancestor {
+                    int source;
+                    int length;
+                    
+                }
+		private Ancestor value;
 	// constructor takes a digraph (not necessarily a DAG)
 	   public SAP(Digraph G) {
 		  if (G == null) {
@@ -22,15 +27,57 @@ public final class SAP {
 		  digraph = new Digraph(G);
 		  this.ancestor = -1;
 		  this.length = digraph.V();
-		   
+                  sources = new Bag<>();
+		  calculateSAP();
 	   }
+           private void calculateSAP(){
+               /*
+               BreadthFirstDirectedPaths bfdpV = null;
+               BreadthFirstDirectedPaths bfdpW = null;
+               BreadthFirstDirectedPaths temp = null;
+               for (int i = 0; i < this.digraph.V(); i++) {                  
+                   if (this.digraph.indegree(i)>0) {
+                       bfdpV = new BreadthFirstDirectedPaths(digraph, i);
+                   }
+                   
+               }
+               */
+               for (int i = 0; i < this.digraph.V(); i++) {                  
+                   if (this.digraph.outdegree(i)>0) {
+                       sources.add(i);
+                   }                  
+               }
+               BreadthFirstDirectedPaths bfdp = new BreadthFirstDirectedPaths(digraph, sources);
+               for (int i = 0; i < sources.size(); i++) {
+                   for (int j = 1; j < sources.size(); j++) {
+                       if (i <= j) {
+                           continue;
+                       }
+                      
+                       
+                   }
+               }
+               
+           }
+           public int length(int v, int w) {
+               return length;
+           }
+           public int length(Iterable<Integer> v, Iterable<Integer> w) {
+               return length;
+           }
+           public int ancestor (int v, int w) {
+               return ancestor;
+           }
+           public int ancestor(Iterable<Integer> v, Iterable<Integer> w) {
+               return ancestor;
+           }
 	   private void validateInputs(int v, int w) {
 		   if (v < 0 || w < 0 || v > digraph.V() - 1 || w > digraph.V()-1) {
 			   throw new IllegalArgumentException();
 		   }
 	   }
 	   // length of shortest ancestral path between v and w; -1 if no such path
-	   public int length(int v, int w) {		   
+	   public int length1(int v, int w) {		   
 		   validateInputs(v, w);
 		   this.length = digraph.V();
 		   this.ancestor = -1;
@@ -42,7 +89,7 @@ public final class SAP {
 	   }
 
 	   // a common ancestor of v and w that participates in a shortest ancestral path; -1 if no such path
-	   public int ancestor(int v, int w) {
+	   public int ancestor1(int v, int w) {
 		   validateInputs(v, w);
 		   if (this.ancestor > -1) {
 			   return this.ancestor;
@@ -54,7 +101,7 @@ public final class SAP {
 	   }
 
 	   // length of shortest ancestral path between any vertex in v and any vertex in w; -1 if no such path
-	   public int length(Iterable<Integer> v, Iterable<Integer> w) {
+	   public int length1(Iterable<Integer> v, Iterable<Integer> w) {
 		   if (v == null || w == null) {
 			   throw new IllegalArgumentException();
 		   }
@@ -94,7 +141,7 @@ public final class SAP {
 		   }
 	   }
 	   // a common ancestor that participates in shortest ancestral path; -1 if no such path
-	   public int ancestor(Iterable<Integer> v, Iterable<Integer> w) {
+	   public int ancestor1(Iterable<Integer> v, Iterable<Integer> w) {
 		   if (v == null || w == null) {
 			   throw new IllegalArgumentException();
 		   }
@@ -181,10 +228,17 @@ public final class SAP {
 	   }
 	// do unit testing of this class
 	   public static void main(String[] args) {
-		   In in = new In(args[0]);
+		
+               args = new String[2];
+                args[0] = "digraph1.txt";
+                Stopwatch stopwatch = new Stopwatch();
+               In in = new In(args[0]);
 		   Digraph G = new Digraph(in);
 		   StdOut.println(G.toString());
+                   
 		   SAP sap = new SAP(G);
+                   /*
+                   StdOut.println("Created SAP in: " + stopwatch.elapsedTime());
 		   int v = 3;
 		   int w = 7;
 //		   Queue<Integer> vis = new Queue<Integer>();
@@ -196,12 +250,56 @@ public final class SAP {
 //		   wis.enqueue(4);
 //		   wis.enqueue(5);
 //		  // StdOut.println(length);
+                  
 		  StdOut.println("Length is: " + sap.length(v,w));
 		  StdOut.println("Ancestor is: " + sap.ancestor(v,w));
 //		  StdOut.println("Length for iterable vis wis: " + sap.length(vis, wis));
 //		  StdOut.println("Ancestor for iterable vis wis: " + sap.ancestor(vis, wis));
-		   
-			
+		   */
+                  Bag<Integer> sources = new Bag<Integer>();
+                  for (int i = 0; i < G.V(); i++) {
+                      if (G.outdegree(i)>0){                     
+                      sources.add(i);
+                      }
+                  }
+                  
+                  Iterable<Integer> path = new Bag<Integer>();
+//                  BreadthFirstDirectedPaths bfs = new BreadthFirstDirectedPaths(G, sources);
+                  /*
+                  for (int i = 0; i < sources.size(); i++) {
+                      path = bfs.pathTo(i);
+                      StdOut.print("Path to " + i + ":" );
+                      for (int v : path) {
+                          StdOut.print(v + "->");
+                      }
+                      StdOut.println();
+                      
+                  }
+                  
+                  for (int i = 0; i < G.V(); i++) {
+                      StdOut.print("Dist from " + i);
+                      for (int j = 1; j < G.V(); j++) {
+                          StdOut.print(" to " + j + " = " + bfs.distTo(j));
+                      }
+                      StdOut.println();
+                  }
+                  */
+                  ArrayList<ArrayList> list = new ArrayList<ArrayList>();
+                  ArrayList<Integer> ancestor = new ArrayList<>();
+                  ancestor.add(0, 1);
+                  list.add(0, ancestor);
+                  
+                  BreadthFirstDirectedPaths bfs1 = null;
+                  for (int i = 0; i < G.V(); i++) {
+                      
+                      for (int j = 1; j < G.V(); j++) {
+                          
+                          bfs1 = new BreadthFirstDirectedPaths(G, j);
+                         
+                          
+                          StdOut.println("Dist from " + i + " to " + j + " = " + bfs1.distTo(i));
+                      }
+                  }
 		}
 
 		   
