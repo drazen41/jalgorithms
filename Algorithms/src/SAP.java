@@ -230,11 +230,12 @@ public final class SAP {
 	   public static void main(String[] args) {
 		
                args = new String[2];
-                args[0] = "digraph1.txt";
+                //args[0] = "digraph1.txt";
+                args[0] = "digraph-wordnet.txt";
                 Stopwatch stopwatch = new Stopwatch();
                In in = new In(args[0]);
 		   Digraph G = new Digraph(in);
-		   StdOut.println(G.toString());
+		   //StdOut.println(G.toString());
                    
 		   SAP sap = new SAP(G);
                    /*
@@ -256,13 +257,14 @@ public final class SAP {
 //		  StdOut.println("Length for iterable vis wis: " + sap.length(vis, wis));
 //		  StdOut.println("Ancestor for iterable vis wis: " + sap.ancestor(vis, wis));
 		   */
+                   /*
                   Bag<Integer> sources = new Bag<Integer>();
                   for (int i = 0; i < G.V(); i++) {
                       if (G.outdegree(i)>0){                     
                       sources.add(i);
                       }
                   }
-                  
+                  */
                   Iterable<Integer> path = new Bag<Integer>();
 //                  BreadthFirstDirectedPaths bfs = new BreadthFirstDirectedPaths(G, sources);
                   /*
@@ -284,25 +286,69 @@ public final class SAP {
                       StdOut.println();
                   }
                   */
-                  ArrayList<ArrayList> list = new ArrayList<ArrayList>();
-                  ArrayList<Integer> ancestor = new ArrayList<>();
-                  ancestor.add(0, 1);
-                  list.add(0, ancestor);
+                  ArrayList<HashMap<Integer,Integer>> list = new ArrayList<>();
+                  HashMap<Integer,Integer> ancestor = new HashMap<>();
+                  //ancestor.add(0, 1);
+                  //list.add(0, ancestor);
+                  HashMap<Integer,HashMap<Integer,Integer>> lista = new HashMap<>();
                   
                   BreadthFirstDirectedPaths bfs1 = null;
                   for (int i = 0; i < G.V(); i++) {
-                      
-                      for (int j = 1; j < G.V(); j++) {
-                          
-                          bfs1 = new BreadthFirstDirectedPaths(G, j);
-                         
-                          
+                      bfs1 = new BreadthFirstDirectedPaths(G, i);
+                      ancestor = new HashMap<>();
+                      for (int j = 0; j < G.V(); j++) {
+                          if (bfs1.hasPathTo(j) && i!=j) {
+                              ancestor.put(j, bfs1.distTo(j));
+                          }
+                          /*
+                          Iterable<Integer> paths = bfs1.pathTo(j);
+                          StdOut.print("Path " + i + " to " + j + " : " );
+                          for (Integer path1 : paths) {
+                              StdOut.print(path1 + "->");
+                          }
                           StdOut.println("Dist from " + i + " to " + j + " = " + bfs1.distTo(i));
+                          */
                       }
-                  }
-		}
+                      list.add(i, ancestor);                     
+		    }
+                  StdOut.println(stopwatch.elapsedTime());
+                    int v = 135;
+                    int w = 2000;
+                    
+                    HashMap<Integer,Integer> vList = list.get(v);
+                    HashMap<Integer,Integer> wList = list.get(w);
+                    HashMap<Integer,Integer> temp;
+                    int k = vList.getOrDefault(w, -1);
+                   int l = wList.getOrDefault(v, -1);
+                   int length=Integer.MAX_VALUE;
+                   int sAncestor = Integer.MAX_VALUE;
+                    if (k>-1) {
+                        //StdOut.println("Ancestor: " + w);
+                        length = k;
+                        sAncestor = w;
+                    } else if (l>-1) {
+                       //StdOut.println("Ancestor: " + v);
+                       length = l;
+                       sAncestor = v;
+                    } else {
+                        for (int vKey : vList.keySet()) {
+                            for (int wKey : wList.keySet()) {
+                                if (vKey == wKey) {
+                                    l = vList.get(vKey) + wList.get(wKey);
+                                    if (l < length) {
+                                        length = l;
+                                        sAncestor = vKey;
+                                    }
+                                }
+                            }
+                        }
+                        
+                    }
+                    StdOut.println("Ancestor: " + sAncestor + "; length: " + length);
 
-		   
+           }
+
+           
 	   
 
 }
