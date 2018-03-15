@@ -1,0 +1,38 @@
+w l r	1  2  3  4  5  6  7  8  9 10 11 12
+Poland    6 1 4 0  1  1  0  1  0  0  0  0  0  1  0
+Russia    5 1 5 1  0  0  1  0  1  1  0  1  0  0  0
+Brazil    5 1 5 1  0  0  1  0  1  0  0  1  1  0  0
+Iran      5 2 4 0  1  1  0  1  0  0  0  0  0  0  1
+Italy     4 2 5 1  0  0  1  0  0  1  0  1  1  0  0
+Cuba      4 2 5 0  1  1  0  0  0  0  1  0  0  1  1
+Argentina 3 3 5 0  1  0  0  1  0  0  1  0  0  1  1
+USA       3 4 4 0  0  0  0  0  1  1  0  1  1  0  0
+Japan     2 5 4 0  1  1  0  1  0  0  1  0  0  0  0
+Serbia    1 5 5 0  0  1  0  1  0  0  1  0  0  1  1
+Egypt     1 6 4 1  0  0  0  0  1  1  0  0  1  0  0
+China     0 7 4 0  0  0  1  0  1  1  0  0  1  0  0
+
+
+3 + 1 + 1 = 5 (rem) + 21 = 26 : 4 = 7 ->Po, Ru, Br, Ir (MinCut)
+2 (rem) + 16 = 18 : 3 = 6 -> Po, Ru
+3 + 3 + 2 + 1 = 9 + 29 = 38 : 6 = 7 -> Po, Ru, Br, Ir, It, Cu 
+38 + 49 = 87 : 11 = 8 - neovisno o izlazu jedan tim će osvojiti 8 pobjeda
+37 + 41 = 88 : 9 = 10
+
+
+w[i] l[i] r[i]          g[i][j]
+i  team         wins loss left   NY Bal Bos Tor Det
+---------------------------------------------------
+0  New York      75   59   28     -   3   8   7   3
+1  Baltimore     71   63   28     3   -   2   7   7
+2  Boston        69   66   27     8   2   -   0   3
+3  Toronto       63   72   27     7   7   0   -   3
+4  Detroit       49   86   27     3   7   3   3   -
+
+
+We would also like to explain the reason for the team's elimination to a friend in nontechnical terms (using only grade-school arithmetic). 
+Here's such an explanation for Detroit's elimination in the American League East example above. With the best possible luck, Detroit finishes the season with 49 + 27 = 76 wins. 
+Consider the subset of teams R = { New York, Baltimore, Boston, Toronto }. Collectively, they already have 75 + 71 + 69 + 63 = 278 wins; there are also 3 + 8 + 7 + 2 + 7 = 27 remaining games among them, 
+so these four teams must win at least an additional 27 games. Thus, on average, the teams in R win at least 305 / 4 = 76.25 games. 
+Regardless of the outcome, one team in R will win at least 77 games, thereby eliminating Detroit. 
+
